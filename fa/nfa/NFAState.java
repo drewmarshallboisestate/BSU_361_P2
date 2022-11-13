@@ -39,6 +39,17 @@ public class NFAState extends State {
         }
     }
 
+    public Set<NFAState> getStateOnSymb(char onSymb) {
+        // Check if the transition table contains the character symbol 
+        if (NFATransitionMap.containsKey(onSymb)) {
+            // If there is a transition return the state set that can be transitioned to
+            return NFATransitionMap.get(onSymb);
+        } else {
+            // Otherwise return an emtpy set as there are no transitions 
+            return new LinkedHashSet<>();
+        }
+    }
+
     public NFAState(String name, boolean finalFlag) {
         // Set final flag to be set to boolean passed in 
         this.finalStateFlag = finalFlag;

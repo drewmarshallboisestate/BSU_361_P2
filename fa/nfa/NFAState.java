@@ -16,7 +16,7 @@ public class NFAState extends State {
     private boolean finalStateFlag;
 
     public NFAState(String stateName) {
-        // Set the name passed in from state
+        // Set the name passed in from state to create the new NFAState
         this.name = name;
         // Create the transition map for the new name 
         NFATransitionMap = new LinkedHashMap<Character, Set<NFAState>>();
@@ -36,7 +36,20 @@ public class NFAState extends State {
             onSymbSet.add(toState);
             // Finally add this set to the transition map 
             NFATransitionMap.put(onSymb, onSymbSet);
-
         }
+    }
+
+    public NFAState(String name, boolean finalFlag) {
+        // Set final flag to be set to boolean passed in 
+        this.finalStateFlag = finalFlag;
+        // Set the name passed in from state to create the new NFAState
+        this.name = name;
+        // Create the transition map for the new name 
+        NFATransitionMap = new LinkedHashMap<Character, Set<NFAState>>();
+    }
+
+    public boolean isFinalFlag() {
+        // Return if the NFAState is a final state or not
+        return finalStateFlag;
     }
 }

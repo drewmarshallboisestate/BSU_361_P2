@@ -18,14 +18,14 @@ public class NFAState extends State {
 
     public NFAState(String stateName) { // Constructor for NFAState
         // Set the name passed in from state to create the new NFAState
-        this.name = name;
+        this.name = stateName;
         // Create the transition map for the new name 
         NFATransitionMap = new LinkedHashMap<Character, HashSet<NFAState>>();
         // Initialize final state flag to false 
         this.finalStateFlag = false;
     }
 
-    public void addTransition(char onSymb, NFAState toState) {
+    public void addTransition(char onSymb, NFAState toState) { // Constructor to add a transition to a state based on an input symbol/character
         // Need to check if the value from the alphabet is alread in our transition map
         if (NFATransitionMap.containsKey(onSymb)) {
             // If so then we can just add the toState to the onSymb key
@@ -47,15 +47,15 @@ public class NFAState extends State {
             return NFATransitionMap.get(onSymb);
         } else {
             // Otherwise return an emtpy set as there are no transitions 
-            return new LinkedHashSet<>();
+            return new HashSet<NFAState>();
         }
     }
 
-    public NFAState(String name, boolean finalFlag) { // Constructor for final state
+    public NFAState(String stateName, boolean finalFlag) { // Constructor for final state
         // Set final flag to be set to boolean passed in 
         this.finalStateFlag = finalFlag;
         // Set the name passed in from state to create the new NFAState
-        this.name = name;
+        this.name = stateName;
         // Create the transition map for the new name 
         NFATransitionMap = new LinkedHashMap<Character, HashSet<NFAState>>();
     }
@@ -65,7 +65,7 @@ public class NFAState extends State {
         return finalStateFlag;
     }
 
-    public LinkedHashMap<Character, HashSet<NFAState>> getTransitions() {
+    public LinkedHashMap<Character, HashSet<NFAState>> getTransitions() { // Constructor to get transitions 
         return NFATransitionMap;
     }
 }

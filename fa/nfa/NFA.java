@@ -1,11 +1,22 @@
 package fa.nfa;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fa.State;
 import fa.dfa.DFA;
 
 public class NFA implements NFAInterface {
+
+    private Set<NFAState> Q; // States
+    private Set<Character> sigma; // Alphabet
+    private NFAState q0; // Start state 
+
+    public NFA() {
+        sigma = new LinkedHashSet<Character>();
+        Q = new LinkedHashSet<NFAState>();
+        q0 = null;
+    }
 
     // Need to 
     @Override

@@ -21,20 +21,40 @@ public class NFA implements NFAInterface {
     // Need to 
     @Override
     public void addStartState(String name) {
-        // TODO Auto-generated method stub
-        
+        NFAState startState = null;
+        if (getState(name) == null) {
+            startState = new NFAState(name);
+            Q.add(startState);
+        }
+        q0 = startState;
+    }
+
+    private NFAState getState(String name) {
+        NFAState testState = null;
+        for (NFAState state: Q) {
+            if (name.equals(state.getName())) {
+                testState = state;
+                break;
+            }
+        }
+        return testState;
     }
 
     @Override
     public void addState(String name) {
-        // TODO Auto-generated method stub
-        
+        NFAState state = new NFAState(name);
+        Q.add(state);       
     }
 
     @Override
     public void addFinalState(String name) {
-        // TODO Auto-generated method stub
-        
+        NFAState finalState = null;
+        for (NFAState state: Q) {
+            if (name.equals(state.getName())) {
+                finalState = new NFAState(name, true);
+                Q.add(finalState);
+            }
+        }  
     }
 
     @Override

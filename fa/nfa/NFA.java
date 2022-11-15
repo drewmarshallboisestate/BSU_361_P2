@@ -8,7 +8,7 @@ import fa.dfa.DFA;
 
 public class NFA implements NFAInterface {
 
-    private Set<NFAState> Q; // States
+    private Set<NFAState> Q, F; // States
     private Set<Character> sigma; // Alphabet
     private NFAState q0; // Start state 
 
@@ -48,18 +48,14 @@ public class NFA implements NFAInterface {
 
     @Override
     public void addFinalState(String name) {
-        NFAState finalState = null;
-        for (NFAState state: Q) {
-            if (name.equals(state.getName())) {
-                finalState = new NFAState(name, true);
-                Q.add(finalState);
-            }
-        }  
+        NFAState finalState = new NFAState(name, true);
+        Q.add(finalState);
+        F.add(finalState);
     }
 
     @Override
     public void addTransition(String fromState, char onSymb, String toState) {
-        // TODO Auto-generated method stub
+        
         
     }
 

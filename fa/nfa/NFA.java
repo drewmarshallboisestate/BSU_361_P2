@@ -15,6 +15,7 @@ public class NFA implements NFAInterface {
     public NFA() {
         sigma = new LinkedHashSet<Character>();
         Q = new LinkedHashSet<NFAState>();
+        F = new LinkedHashSet<NFAState>();
         q0 = null;
     }
 
@@ -55,9 +56,23 @@ public class NFA implements NFAInterface {
 
     @Override
     public void addTransition(String fromState, char onSymb, String toState) {
-        
-        
+        NFAState stateFrom = null;
+        NFAState stateTo = null;
+
+        stateFrom = getState(fromState);
+        stateTo = getState(toState);
+
+        // If transition is valid, stateFrom and stateTo must not be null.
+        if (stateFrom != null && stateTo != null) {
+            stateFrom.addTransition(onSymb, stateTo);
+        }
+
+        // Add character to alphabet if it doesn't already exist.
+        if(!sigma.contains(onSymb)) {
+            sigma.add(onSymb);
+        }
     }
+    
 
     @Override
     public Set<? extends State> getStates() {

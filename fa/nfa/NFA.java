@@ -1,7 +1,11 @@
 package fa.nfa;
 
+import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.Iterator;
 
 import fa.State;
 import fa.dfa.DFA;
@@ -17,6 +21,7 @@ public class NFA implements NFAInterface {
         Q = new LinkedHashSet<NFAState>();
         F = new LinkedHashSet<NFAState>();
         q0 = null;
+        eClosure(q0); // for testing purposes
     }
 
     // Need to 
@@ -101,7 +106,6 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -113,8 +117,29 @@ public class NFA implements NFAInterface {
 
     @Override
     public Set<NFAState> eClosure(NFAState s) {
-        // TODO Auto-generated method stub
+        ArrayDeque<NFAState> statesToVisit = new ArrayDeque<>();
+        statesToVisit.push(s);
+        Set<NFAState> statesVisited = new LinkedHashSet<NFAState>();
+        eClosureTraversal(statesToVisit, statesVisited);
+
         return null;
     }
-    
+
+    private boolean eClosureTraversal(ArrayDeque<NFAState> statesToVisit, Set<NFAState> statesVisited) {
+        NFAState currState = statesToVisit.pop();
+        statesVisited.add(currState);
+
+        // Check if state on top of stack has child nodes
+        LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
+
+        if(adjacentStates.isEmpty()) {
+            return false;
+        } else {
+            while(!adjacentStates.isEmpty()) {
+                statesToVisit.push(adjacentStates.get());
+            }
+            eClosureTraversal(statesToVisit, statesVisited);
+            return true;
+        }
+    }
 }

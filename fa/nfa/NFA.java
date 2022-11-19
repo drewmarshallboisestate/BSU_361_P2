@@ -76,8 +76,11 @@ public class NFA implements NFAInterface {
 
     @Override
     public Set<? extends State> getStates() {
-        // TODO Auto-generated method stub
-        return null;
+        Set<NFAState> allStates = new LinkedHashSet<NFAState>();
+        allStates.addAll(Q);
+        allStates.addAll(F);
+        
+        return allStates;
     }
 
     @Override

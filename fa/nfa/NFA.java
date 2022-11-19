@@ -21,7 +21,6 @@ public class NFA implements NFAInterface {
         Q = new LinkedHashSet<NFAState>();
         F = new LinkedHashSet<NFAState>();
         q0 = null;
-        eClosure(q0); // for testing purposes
     }
 
     // Need to 
@@ -106,6 +105,9 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
+        Iterator<NFAState> it = Q.iterator();
+        it.next();
+        eClosure(it.next()); // for testing purposes
         return null;
     }
 
@@ -118,28 +120,61 @@ public class NFA implements NFAInterface {
     @Override
     public Set<NFAState> eClosure(NFAState s) {
         ArrayDeque<NFAState> statesToVisit = new ArrayDeque<>();
-        statesToVisit.push(s);
+        statesToVisit.add(s);
+        
+        // Used to track the states that are visited during traversal
         Set<NFAState> statesVisited = new LinkedHashSet<NFAState>();
-        eClosureTraversal(statesToVisit, statesVisited);
-
-        return null;
+        Set<NFAState> eTransitionStates = new LinkedHashSet<NFAState>();
+        eTransitionStates = eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
+        
+        return eTransitionStates;
     }
 
-    private boolean eClosureTraversal(ArrayDeque<NFAState> statesToVisit, Set<NFAState> statesVisited) {
-        NFAState currState = statesToVisit.pop();
-        statesVisited.add(currState);
-
-        // Check if state on top of stack has child nodes
-        LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
-
-        if(adjacentStates.isEmpty()) {
-            return false;
+    /**
+     * Uses recursive, depth-first search to find all accessible states from given state using only epsilon transitions.
+     * A stack is used to keep track of which states must be visited. If the current state has adjacent states accessible
+     * by epsilon transition, then those states are pushed onto the stack.
+     * 
+     * Then, method is called again passing in the stack with the newly pushed adjacent states and search for adjacents states
+     * accessible by epsilon transition is performed again.
+     * 
+     * Method returns once there are no more states to visit.
+     * 
+     * @param statesToVisit  States to traverse through during search. Initially contains only the given state.
+     * @param statesVisited States that have been visited during the search.
+     * @param eTransitionStates States accessible from provided state. Initially empty.
+     * 
+     * @return Set of NFA states accessible from provided state only on epsilon transitions.
+     * 
+     * @author Steven Lineses
+     */
+    private Set<NFAState> eClosureTraversal(ArrayDeque<NFAState> statesToVisit, Set<NFAState> statesVisited, Set<NFAState> eTransitionStates) {
+        if(statesToVisit.isEmpty()) {
+            return eTransitionStates;
         } else {
-            while(!adjacentStates.isEmpty()) {
-                statesToVisit.push(adjacentStates.get());
+            NFAState currState = statesToVisit.pop();
+            statesVisited.add(currState);
+    
+            // Check if state on top of stack has child nodes
+            LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
+    
+            // Ensure that curr state has adjacent nodes with at least one e-transition.
+            if(!adjacentStates.isEmpty() && adjacentStates.keySet().contains('e')) {
+                for(NFAState adjacentState : adjacentStates.get('e')) {
+
+                    // Ensure that the current state has not already been visited. Don't need to revisit
+                    // a state including the current state itself.
+                    if(!statesVisited.contains(adjacentState) && !statesToVisit.contains(adjacentState)) {
+                        statesToVisit.add(adjacentState);
+                    }
+    
+                    eTransitionStates.add(adjacentState);
+                }
+    
+                eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
             }
-            eClosureTraversal(statesToVisit, statesVisited);
-            return true;
         }
+
+        return eTransitionStates;
     }
 }

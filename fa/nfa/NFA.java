@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import fa.State;
 import fa.dfa.DFA;
+import fa.dfa.DFAState;
 
 public class NFA implements NFAInterface {
 
@@ -105,6 +106,7 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
+        DFAState q0 = q0toDFAStartState(this.q0);
         Iterator<NFAState> it = Q.iterator();
         it.next();
         eClosure(it.next()); // for testing purposes
@@ -176,5 +178,26 @@ public class NFA implements NFAInterface {
         }
 
         return eTransitionStates;
+    }
+
+    /**
+     * Converts an NFA start state to a DFA start state.
+     * 
+     * @param q0 This NFA's start state.
+     * @return DFA start state converted from supplied NFA start state.
+     * 
+     * @author Steven Lineses
+     */
+    private DFAState q0toDFAStartState(NFAState q0) {
+        // Find all states accessible by start state using epsilon transitions.
+        Set<NFAState> eTransitions = eClosure(q0);
+
+        // Create new DFA start state name based on results from e closure traversal.
+        StringBuilder sb = new StringBuilder();
+        for(NFAState s : eTransitions) {
+            sb.append(s.getName());
+        }
+        
+        return new DFAState(sb.toString());
     }
 }

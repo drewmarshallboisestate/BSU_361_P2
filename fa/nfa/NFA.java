@@ -120,18 +120,16 @@ public class NFA implements NFAInterface {
         HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //passed State map
         Set<NFAState> NFAStates = eClosure(q0);  
 
-
+        NFAMap.put(NFAStates, NFAStates.toString());
         NFAList.add(NFAStates);
         dfa.addStartState(NFAStates.toString());
-        NFAMap.put(NFAStates, NFAStates.toString());
-
 
         while (!NFAList.isEmpty()) {
             NFAStates = NFAList.poll();
             //NFASet.add(walkingStates);
 
             for (char trans: sigma) {
-                Set<NFAState> tempSet = new LinkedHashSet<>();
+                LinkedHashSet<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
                     tempSet.addAll(state.getStateOnSymb(trans));
                     //Set<NFAState> transitions = state.getStateOnSymb(trans);
@@ -141,11 +139,10 @@ public class NFA implements NFAInterface {
                     //     }
                     // }   
                 }
-                Set<NFAState> secondTempSet = new LinkedHashSet<>();
+                LinkedHashSet<NFAState> secondTempSet = new LinkedHashSet<>();
                 for (NFAState state: tempSet) {
                     secondTempSet.addAll(eClosure(state));
                 }
-
                 // boolean destination = NFASet.contains(tempSet);
                 // if (!destination) {
                 //     if (hasFinal(tempSet)) {
@@ -159,7 +156,6 @@ public class NFA implements NFAInterface {
                 //     }
                     
                 // }
-
                 boolean destination = NFAMap.containsKey(secondTempSet);
                 if (!destination) {
                     NFAMap.put(secondTempSet, secondTempSet.toString());
@@ -170,13 +166,8 @@ public class NFA implements NFAInterface {
                         dfa.addState(NFAMap.get(secondTempSet));
                     }
                 }
-
                 dfa.addTransition(NFAMap.get(NFAStates), trans, NFAMap.get(secondTempSet));
             }
-
-        
-
-
         }
         return dfa;
     }
@@ -207,7 +198,7 @@ public class NFA implements NFAInterface {
         Set<NFAState> statesVisited = new LinkedHashSet<NFAState>();
         Set<NFAState> eTransitionStates = new LinkedHashSet<NFAState>();
         eTransitionStates = eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
-        
+    
         return eTransitionStates;
     }
 

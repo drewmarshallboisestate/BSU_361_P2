@@ -1,7 +1,10 @@
 package fa.nfa;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -83,15 +86,15 @@ public class NFA implements NFAInterface {
     public Set<? extends State> getStates() {
         Set<NFAState> allStates = new LinkedHashSet<NFAState>();
         allStates.addAll(Q);
-        allStates.addAll(F);
+        //allStates.addAll(F);
         
         return allStates;
     }
 
     @Override
     public Set<? extends State> getFinalStates() {
-        // TODO Auto-generated method stub
-        return null;
+        
+        return F;
     }
 
     @Override
@@ -106,17 +109,93 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
-        DFAState q0 = q0toDFAStartState(this.q0);
-        Iterator<NFAState> it = Q.iterator();
-        it.next();
-        eClosure(it.next()); // for testing purposes
-        return null;
+        //DFAState q0 = q0toDFAStartState(this.q0);
+        // Iterator<NFAState> it = Q.iterator();
+        // it.next();
+        // eClosure(it.next()); // for testing purposes
+
+        DFA dfa = new DFA();
+        LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //queue
+        //Set<Set<NFAState>> NFASet = new LinkedHashSet<>();  //
+        HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //passed State map
+        Set<NFAState> NFAStates = eClosure(q0);  
+
+
+        NFAList.add(NFAStates);
+        dfa.addStartState(NFAStates.toString());
+        NFAMap.put(NFAStates, NFAStates.toString());
+
+
+        while (!NFAList.isEmpty()) {
+            NFAStates = NFAList.poll();
+            //NFASet.add(walkingStates);
+
+            for (char trans: sigma) {
+                Set<NFAState> tempSet = new LinkedHashSet<>();
+                for (NFAState state: NFAStates) {
+                    tempSet.addAll(state.getStateOnSymb(trans));
+                    //Set<NFAState> transitions = state.getStateOnSymb(trans);
+                    // if(transitions != null) {
+                    //     for (NFAState tempState: transitions) {
+                    //         tempSet.addAll(eClosure(tempState));
+                    //     }
+                    // }   
+                }
+                Set<NFAState> secondTempSet = new LinkedHashSet<>();
+                for (NFAState state: tempSet) {
+                    secondTempSet.addAll(eClosure(state));
+                }
+
+                // boolean destination = NFASet.contains(tempSet);
+                // if (!destination) {
+                //     if (hasFinal(tempSet)) {
+                //         NFAMap.put(tempSet, tempSet.toString());
+                //         dfa.addFinalState(NFAMap.get(tempSet));
+                //         NFASet.add(tempSet);
+                //     } else {
+                //         NFAMap.put(tempSet, tempSet.toString());
+                //         dfa.addState(NFAMap.get(tempSet));
+                //         NFASet.add(tempSet);
+                //     }
+                    
+                // }
+
+                boolean destination = NFAMap.containsKey(secondTempSet);
+                if (!destination) {
+                    NFAMap.put(secondTempSet, secondTempSet.toString());
+                    NFAList.add(secondTempSet);
+                    if (hasFinal(secondTempSet)) {
+                        dfa.addFinalState(NFAMap.get(secondTempSet));   
+                    } else {
+                        dfa.addState(NFAMap.get(secondTempSet));
+                    }
+                }
+
+                dfa.addTransition(NFAMap.get(NFAStates), trans, NFAMap.get(secondTempSet));
+            }
+
+        
+
+
+        }
+        return dfa;
+    }
+
+    public boolean hasFinal(Set<NFAState> tempSet) {
+        boolean hasFinal = false;
+        for (NFAState state: Q) {
+            if (state.isFinalFlag()) {
+                hasFinal = true;
+                break;
+            }
+        } 
+        return hasFinal;
     }
 
     @Override
     public Set<NFAState> getToState(NFAState from, char onSymb) {
-        // TODO Auto-generated method stub
-        return null;
+         
+        return from.getStateOnSymb(onSymb);
     }
 
     @Override

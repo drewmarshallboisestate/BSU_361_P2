@@ -5,10 +5,12 @@
 
 ## Overview
 
-Concisely explain what the program does. If this exceeds a couple of
-sentences, you're going too far. Generally you should be pulling this
-right from the project specification. Please don't just cut and
-paste, but paraphrase what is stated in the project specification.
+Our program takes in a formatted .txt file and converts it
+into a Nondeterministic Finite Automata (NFA). It creates
+the standard 5-tuple containing states, final states, alphabet,
+start state, and transitions. As well, our program allows the 
+user to convert the input NFA into its respective DFA using both
+a breadth first and depth first search to process the conversion.
 
 ## Reflection
 
@@ -23,6 +25,37 @@ insights):
 - If you could go back in time, what would you tell yourself about doing 
 this project?
 
+### Drew's Reflection:
+Beginning the project was probably the most difficult part. Understanding 
+how to organize the NFA and how it would differ from the previous DFA was
+a large step to take. I found that the NFAState was pretty similar to the
+way the first project was set up, using a LinkedHashMap to store each state
+and their transitions. After conversing with other students and past students
+I found that having two different methods to create an NFA state and an NFA
+final state were helpful later on. 
+
+I think most concepts are clear and it was good practice having to use lists
+and maps to store and retrieve information. Steven implemented eClosure and 
+its depth first traversal and learning how to use that to create the new 
+states for the NFA based on epsilon transitions took some time, but I was able
+to help organize it and understand how the new set of states was being returned. 
+Debugging was a big process for us and having to set multiple breakpoints throughout
+was the best way to understand where our code was breaking. I also had to 
+implement several print statements in order to understand what was being returned, 
+and figure out how formatting would work/impact our output. 
+
+For me personally, I would like to start using a whiteboard more when creating
+the design aspect of my code. I think this would not only help me debug,
+but visually understand how the code should work and be implemented rather
+than simply trying to do it all immediately as code. Drawing things out 
+would certainly help with things such as certain formatted searches. It 
+would certainly be a useful skill to have for interviews and working 
+with large groups. Finally, if I could go back it would be the same thing
+I always say start early. I think what I need to work on is breaking my
+programs down into small portions instead of trying to do it all at once.
+Like building a puzzle, build it up piece by piece, don't try and put them 
+all together at once. 
+
 ## Compiling and Using
 
 This section should tell the user how to compile your code.  It is
@@ -32,10 +65,30 @@ about it to use it as quickly as possible?
 
 ## Sources used
 
-If you used any sources outside of the lecture notes, class lab files,
-or text book you need to list them here. If you looked something up on
-stackoverflow.com and fail to cite it in this section it will be
-considered plagiarism and be dealt with accordingly. So be safe CITE!
+### Drew's Sources
+I used alot of different sources throught the programmnig process. The 
+resource I found myelf using the most was talking and working with other
+groups within the class to debug and understand how certain parts of
+the program should be implemented and foramtted. As well, I met serveral
+times with my friends who have completed their CS degree to get 
+guidance on how to approach and build the program. My friends Casey and 
+Trevor were useful in helping me understand how both searches should work
+and how I would implement them based on how we foramtted our NFA. 
+
+Online sources I used:
+https://docs.oracle.com/javase/8/docs/api/java/util/List.html
+https://docs.oracle.com/javase/8/docs/api/java/util/Set.html
+https://docs.oracle.com/javase/8/docs/api/java/util/Map.html
+https://www.geeksforgeeks.org/map-interface-java-examples/
+https://www.programiz.com/dsa/graph-bfs
+https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
+https://www.javatpoint.com/automata-conversion-from-nfa-to-dfa
+
+The following link is a Github page that is a tutorial for how NFA's work
+and how to think of them when implemented using java
+https://grrinchas.github.io/posts/nfa
+
+
 ----------
 
 ## Jokes

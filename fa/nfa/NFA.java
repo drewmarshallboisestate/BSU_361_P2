@@ -199,6 +199,15 @@ public class NFA implements NFAInterface {
                     break;
                 }
 
+                /*
+                 * This implements a breadth-first search because it 
+                 * takes a single state from the queue and finds all
+                 * possible transitions out of that state and then spreads
+                 * to each following state rather than following a transition
+                 * entirely through each state. It processes through state and
+                 * expands from all possible transitions.
+                 */
+                
                 //Set representation of states remaing to transition to based on each transition character
                 Set<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {

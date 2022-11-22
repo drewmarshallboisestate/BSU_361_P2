@@ -109,16 +109,16 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
-        //DFAState q0 = q0toDFAStartState(this.q0);
+        // DFAState q0 = q0toDFAStartState(this.q0);
         // Iterator<NFAState> it = Q.iterator();
         // it.next();
         // eClosure(it.next()); // for testing purposes
 
         DFA dfa = new DFA();
         LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //queue
-        //Set<Set<NFAState>> NFASet = new LinkedHashSet<>();  //
         HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //passed State map
         Set<NFAState> NFAStates = eClosure(q0);  
+        //Set<Set<NFAState>> NFASet = new LinkedHashSet<>();
 
         NFAMap.put(NFAStates, NFAStates.toString());
         NFAList.add(NFAStates);
@@ -126,18 +126,22 @@ public class NFA implements NFAInterface {
 
         while (!NFAList.isEmpty()) {
             NFAStates = NFAList.poll();
-            //NFASet.add(walkingStates);
+            // Set<NFAState> walkingSet = NFAList.remove(0);
+            // NFASet.add(walkingSet);
 
             for (char trans: sigma) {
+                if (trans == 'e') {
+                    break;
+                }
                 LinkedHashSet<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
                     tempSet.addAll(state.getStateOnSymb(trans));
-                    //Set<NFAState> transitions = state.getStateOnSymb(trans);
-                    // if(transitions != null) {
-                    //     for (NFAState tempState: transitions) {
-                    //         tempSet.addAll(eClosure(tempState));
-                    //     }
-                    // }   
+                //     Set<NFAState> transitions = state.getStateOnSymb(trans);
+                //     if(transitions != null) {
+                //         for (NFAState tempState: transitions) {
+                //             tempSet.addAll(eClosure(tempState));
+                //         }
+                //     }   
                 }
                 LinkedHashSet<NFAState> secondTempSet = new LinkedHashSet<>();
                 for (NFAState state: tempSet) {
@@ -154,10 +158,12 @@ public class NFA implements NFAInterface {
                 //         dfa.addState(NFAMap.get(tempSet));
                 //         NFASet.add(tempSet);
                 //     }
-                    
+                //     if (NFAList.contains(tempSet)) {
+                //         NFAList.add(tempSet);
+                //     }
                 // }
-                boolean destination = NFAMap.containsKey(secondTempSet);
-                if (!destination) {
+                //boolean destination = NFAMap.containsKey(secondTempSet);
+                if (!NFAMap.containsKey(secondTempSet)) {
                     NFAMap.put(secondTempSet, secondTempSet.toString());
                     NFAList.add(secondTempSet);
                     if (hasFinal(secondTempSet)) {
@@ -165,8 +171,10 @@ public class NFA implements NFAInterface {
                     } else {
                         dfa.addState(NFAMap.get(secondTempSet));
                     }
+                
                 }
                 dfa.addTransition(NFAMap.get(NFAStates), trans, NFAMap.get(secondTempSet));
+                
             }
         }
         return dfa;
@@ -198,7 +206,7 @@ public class NFA implements NFAInterface {
         Set<NFAState> statesVisited = new LinkedHashSet<NFAState>();
         Set<NFAState> eTransitionStates = new LinkedHashSet<NFAState>();
         eTransitionStates = eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
-    
+
         return eTransitionStates;
     }
 
@@ -226,6 +234,7 @@ public class NFA implements NFAInterface {
         } else {
             NFAState currState = statesToVisit.pop();
             statesVisited.add(currState);
+            eTransitionStates.add(currState);
     
             // Check if state on top of stack has child nodes
             LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
@@ -244,7 +253,7 @@ public class NFA implements NFAInterface {
                 }
     
                 eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
-            }
+            } eTransitionStates.add(currState);
         }
 
         return eTransitionStates;

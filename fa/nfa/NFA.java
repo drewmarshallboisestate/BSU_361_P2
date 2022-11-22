@@ -211,16 +211,19 @@ public class NFA implements NFAInterface {
                 //Set representation of states remaing to transition to based on each transition character
                 Set<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
-                    tempSet.addAll(state.getStateOnSymb(trans));  //add all the states that can be transitioned to based on a transition character     
+                    Set<NFAState> newSet = state.getStateOnSymb(trans);
+                    tempSet.addAll(newSet);  //add all the states that can be transitioned to based on a transition character     
                 }
                     //Set representation of states remaing to transition to based on each transition character
                     Set<NFAState> secondTempSet = new LinkedHashSet<>();
                     for (NFAState state: tempSet) {
-                        secondTempSet.addAll(eClosure(state));  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
+                        Set<NFAState> newSetEpsilon = eClosure(state);
+                        secondTempSet.addAll(newSetEpsilon);  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
                     }
             
                 //If our map does not contains the set created from eclosure (it's a new state created from eclosure that will be in the DFA)
-                if (!NFAMap.containsKey(secondTempSet)) {
+                boolean hasKey = NFAMap.containsKey(secondTempSet);
+                if (!hasKey) {
                     NFAList.add(secondTempSet);  //add that set to our list/queue to process through later
                     NFAMap.put(secondTempSet, secondTempSet.toString());  //Add this newly created state set to our map and have it contain the toString value representation of the state in order to create it as a DFA state
                     
@@ -233,8 +236,8 @@ public class NFA implements NFAInterface {
                         String stateToAdd = NFAMap.get(secondTempSet);
                         dfa.addState(stateToAdd);  //Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
                     }
-                
                 }
+
                 String fromState = NFAMap.get(NFAStates);  //Create the string representation of the state set we are on
                 String toState = NFAMap.get(secondTempSet);  //Create the string representation of the state set we will create a transition to
                 dfa.addTransition(fromState, trans, toState);   //Add the transition to the DFA with the newly created state sets

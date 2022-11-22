@@ -4,22 +4,40 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
-import java.util.Iterator;
 
 import fa.State;
 import fa.dfa.DFA;
-import fa.dfa.DFAState;
 
+/**
+ * Tuesday, November 22, 2022 
+ * Implementation of an NFA machine using 
+ * the NFAInterface. Creates an NFA and the 
+ * five-tuple associated with it. Can also 
+ * return a DFA converted from an NFA.
+ * @author Drew Marshall
+ * @author Steven Lineses
+ */
+
+
+ /**
+  * Class that provides the 5-tuple of a compete NFA.
+  * Provides common methods applicable to an NFA. Can
+  * convert a given NFA into a DFA by combining states
+  * and removing epsilon transitions. 
+  */
 public class NFA implements NFAInterface {
 
-    private Set<NFAState> Q, F; // States
+    private Set<NFAState> Q, F; // States, Final states 
     private Set<Character> sigma; // Alphabet
     private NFAState q0; // Start state 
 
+    /**
+     * Constructor representation of a complete NFA
+     * Creates a transition map later on
+     */
     public NFA() {
         sigma = new LinkedHashSet<Character>();
         Q = new LinkedHashSet<NFAState>();
@@ -27,34 +45,54 @@ public class NFA implements NFAInterface {
         q0 = null;
     }
 
-    // Need to 
+    
+    /** 
+     * Converts a string into the starting NFA state
+     * @param name String representation of state
+     */
     @Override
     public void addStartState(String name) {
         NFAState startState = null;
         if (getState(name) == null) {
             startState = new NFAState(name);
             Q.add(startState);
+            q0 = startState;
         }
-        q0 = startState;
     }
 
+    
+    /** 
+     * Gets a particular state 
+     * @param name of state to retrieve
+     * @return NFAState that matches the name
+     */
     private NFAState getState(String name) {
         NFAState testState = null;
         for (NFAState state: Q) {
             if (name.equals(state.getName())) {
                 testState = state;
-                break;
+                return testState;
             }
         }
         return testState;
     }
 
+    
+    /** 
+     * Creates and adds a state to the NFA
+     * @param name of state to be added 
+     */
     @Override
     public void addState(String name) {
         NFAState state = new NFAState(name);
         Q.add(state);       
     }
 
+    
+    /** 
+     * Creates and adds a final state to the NFA
+     * @param name of state to be added as a final state
+     */
     @Override
     public void addFinalState(String name) {
         NFAState finalState = new NFAState(name, true);
@@ -62,6 +100,14 @@ public class NFA implements NFAInterface {
         F.add(finalState);
     }
 
+    
+    /** 
+     * Creates and adds a transition from the fromState to the toState
+     * on the given character transition
+     * @param fromState state being transitioned from
+     * @param onSymb character in alphabet 
+     * @param toState state being transitioned to
+     */
     @Override
     public void addTransition(String fromState, char onSymb, String toState) {
         NFAState stateFrom = null;
@@ -82,93 +128,148 @@ public class NFA implements NFAInterface {
     }
     
 
+    
+    /** 
+     * Returns Q (representation of all states)
+     * @return the set of states in the NFA
+     */
     @Override
     public Set<? extends State> getStates() {
-        Set<NFAState> allStates = new LinkedHashSet<NFAState>();
-        allStates.addAll(Q);
-        //allStates.addAll(F);
-        
-        return allStates;
+        return Q;
     }
 
+    
+    /** 
+     * Returns F (representation of final states)
+     * @return the set of final states in NFA
+     */
     @Override
-    public Set<? extends State> getFinalStates() {
-        
+    public Set<? extends State> getFinalStates() {  
         return F;
     }
 
+    
+    /** 
+     * Returns q0 (start state representation in NFA)
+     * @return the start state of the NFA
+     */
     @Override
     public State getStartState() {
         return q0;
     }
 
+    
+    /** 
+     * Returns sigma (set representation of alphabet/transition characters)
+     * @return Set of characters in the alphabet
+     */
     @Override
     public Set<Character> getABC() {
         return sigma;
     }
 
+    
+    /** 
+     * Creates a DFA from an NFA following the convertion steps.
+     * Walks through the NFA state by state and finds each transition.
+     * If an epsilon transition exists the states that the epsilon transitions
+     * to will be combined with from the transitioning state. This will create
+     * the new states in the DFA and allow to remove epsilon transitions.
+     * @return DFA converted from NFA
+     */
     @Override
     public DFA getDFA() {
 
-        DFA dfa = new DFA();
-        LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //queue
-        HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //passed State map
-        Set<NFAState> NFAStates = eClosure(q0);  
+        DFA dfa = new DFA(); //DFA to be returned 
+        LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //list/queue representation of the NFA states
+        HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //map to track each state passed over from the NFA, allows us to step through and create each new state/transition
+        Set<NFAState> NFAStates = eClosure(q0);  //gets first set state from NFA to create DFA
+      
+        NFAList.add(NFAStates);  //adds the set of states created from eClosure of q0 to the queue
+        dfa.addStartState(NFAStates.toString());  //Adds the starting state set to the DFA
+        NFAMap.put(NFAStates, NFAStates.toString());  //put the set of states into the map with the set as the key and its toString representation as its value
 
-        NFAMap.put(NFAStates, NFAStates.toString());
-        NFAList.add(NFAStates);
-        dfa.addStartState(NFAStates.toString());
-
-        while (!NFAList.isEmpty()) {
-            NFAStates = NFAList.poll();
+        while (!NFAList.isEmpty()) {  //loop through the queue/list that holds NFA states
+            NFAStates = NFAList.remove(0); //removes the first NFA state in the list as it has been added or will be added later, process of moving through the queue
      
-            for (char trans: sigma) {
+            for (char trans: sigma) {  //loop through each transition in the alphabet
+
+                //We don't want to include epsilon transitions in our DFA
                 if (trans == 'e') {
                     break;
                 }
-                LinkedHashSet<NFAState> tempSet = new LinkedHashSet<>();
+
+                //Set representation of states remaing to transition to based on each transition character
+                Set<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
-                    tempSet.addAll(state.getStateOnSymb(trans));       
+                    tempSet.addAll(state.getStateOnSymb(trans));  //add all the states that can be transitioned to based on a transition character     
                 }
-                LinkedHashSet<NFAState> secondTempSet = new LinkedHashSet<>();
+
+                //Set representation of states remaing to transition to based on each transition character
+                Set<NFAState> secondTempSet = new LinkedHashSet<>();
                 for (NFAState state: tempSet) {
-                    secondTempSet.addAll(eClosure(state));
+                    secondTempSet.addAll(eClosure(state));  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
                 }
             
+                //If our map does not contains the set created from eclosure (it's a new state created from eclosure that will be in the DFA)
                 if (!NFAMap.containsKey(secondTempSet)) {
-                    NFAMap.put(secondTempSet, secondTempSet.toString());
-                    NFAList.add(secondTempSet);
-                    if (hasFinal(secondTempSet)) {
-                        dfa.addFinalState(NFAMap.get(secondTempSet));   
-                    } else {
-                        dfa.addState(NFAMap.get(secondTempSet));
+                    NFAList.add(secondTempSet);  //add that set to our list/queue to process through later
+                    NFAMap.put(secondTempSet, secondTempSet.toString());  //Add this newly created state set to our map and have it contain the toString value representation of the state in order to create it as a DFA state
+                    
+                    boolean isFinal = hasFinal(secondTempSet);  //Search the state set to see if it contains a final state from the NFA
+                    //If it contains a final state add it to the DFA as a final state
+                    if (isFinal) {
+                        String stateToAdd = NFAMap.get(secondTempSet);
+                        dfa.addFinalState(stateToAdd);   //Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
+                    } else {  //Otherwise add it as a normal state 
+                        String stateToAdd = NFAMap.get(secondTempSet);
+                        dfa.addState(stateToAdd);  //Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
                     }
                 
                 }
-                dfa.addTransition(NFAMap.get(NFAStates), trans, NFAMap.get(secondTempSet));
-                
+                String fromState = NFAMap.get(NFAStates);  //Create the string representation of the state set we are on
+                String toState = NFAMap.get(secondTempSet);  //Create the string representation of the state set we will create a transition to
+                dfa.addTransition(fromState, trans, toState);   //Add the transition to the DFA with the newly created state sets
             }
         }
         return dfa;
     }
 
-    public boolean hasFinal(Set<NFAState> tempSet) {
-        boolean hasFinal = false;
-        for (NFAState state: tempSet) {
-            if (state.isFinalFlag()) {
-                hasFinal = true;
-                break;
+    
+    /** 
+     * Searches the set of states to see if it contains a final state in the DFA
+     * @param searchSet set of states 
+     * @return whether or not the set contains a state that is in the NFA's final set of states
+     */
+    public boolean hasFinal(Set<NFAState> searchSet) {
+        //Loop through each state in the passed in set
+        for (NFAState state: searchSet) {
+            //If the state is in the NFA's final set of states return true
+            if (F.contains(state)) { 
+                return true;
             }
         } 
-        return hasFinal;
+        return false;
     }
 
+    
+    /** 
+     * Returns the states that will be transitioned to based on passed 
+     * in state and alphabet symbol 
+     * @param from state currently at 
+     * @param onSymb character from alphabet
+     * @return Set of NFA states that will be transitioned to 
+     */
     @Override
-    public Set<NFAState> getToState(NFAState from, char onSymb) {
-         
+    public Set<NFAState> getToState(NFAState from, char onSymb) {  
         return from.getStateOnSymb(onSymb);
     }
 
+    
+    /** 
+     * @param s
+     * @return Set<NFAState>
+     */
     @Override
     public Set<NFAState> eClosure(NFAState s) {
         ArrayDeque<NFAState> statesToVisit = new ArrayDeque<>();
@@ -206,7 +307,6 @@ public class NFA implements NFAInterface {
         } else {
             NFAState currState = statesToVisit.pop();
             statesVisited.add(currState);
-            eTransitionStates.add(currState);
     
             // Check if state on top of stack has child nodes
             LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
@@ -225,7 +325,9 @@ public class NFA implements NFAInterface {
                 }
     
                 eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
-            } eTransitionStates.add(currState);
+            } 
+
+            eTransitionStates.add(currState);  //For every transition to a state with an epsilon it will include the original state in the result state
         }
 
         return eTransitionStates;

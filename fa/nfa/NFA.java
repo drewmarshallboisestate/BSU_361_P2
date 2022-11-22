@@ -207,18 +207,17 @@ public class NFA implements NFAInterface {
                  * entirely through each state. It processes through state and
                  * expands from all possible transitions.
                  */
-                
+
                 //Set representation of states remaing to transition to based on each transition character
                 Set<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
                     tempSet.addAll(state.getStateOnSymb(trans));  //add all the states that can be transitioned to based on a transition character     
                 }
-
-                //Set representation of states remaing to transition to based on each transition character
-                Set<NFAState> secondTempSet = new LinkedHashSet<>();
-                for (NFAState state: tempSet) {
-                    secondTempSet.addAll(eClosure(state));  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
-                }
+                    //Set representation of states remaing to transition to based on each transition character
+                    Set<NFAState> secondTempSet = new LinkedHashSet<>();
+                    for (NFAState state: tempSet) {
+                        secondTempSet.addAll(eClosure(state));  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
+                    }
             
                 //If our map does not contains the set created from eclosure (it's a new state created from eclosure that will be in the DFA)
                 if (!NFAMap.containsKey(secondTempSet)) {

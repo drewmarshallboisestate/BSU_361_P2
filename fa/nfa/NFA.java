@@ -109,16 +109,11 @@ public class NFA implements NFAInterface {
 
     @Override
     public DFA getDFA() {
-        // DFAState q0 = q0toDFAStartState(this.q0);
-        // Iterator<NFAState> it = Q.iterator();
-        // it.next();
-        // eClosure(it.next()); // for testing purposes
 
         DFA dfa = new DFA();
         LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //queue
         HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //passed State map
         Set<NFAState> NFAStates = eClosure(q0);  
-        //Set<Set<NFAState>> NFASet = new LinkedHashSet<>();
 
         NFAMap.put(NFAStates, NFAStates.toString());
         NFAList.add(NFAStates);
@@ -126,43 +121,20 @@ public class NFA implements NFAInterface {
 
         while (!NFAList.isEmpty()) {
             NFAStates = NFAList.poll();
-            // Set<NFAState> walkingSet = NFAList.remove(0);
-            // NFASet.add(walkingSet);
-
+     
             for (char trans: sigma) {
                 if (trans == 'e') {
                     break;
                 }
                 LinkedHashSet<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
-                    tempSet.addAll(state.getStateOnSymb(trans));
-                //     Set<NFAState> transitions = state.getStateOnSymb(trans);
-                //     if(transitions != null) {
-                //         for (NFAState tempState: transitions) {
-                //             tempSet.addAll(eClosure(tempState));
-                //         }
-                //     }   
+                    tempSet.addAll(state.getStateOnSymb(trans));       
                 }
                 LinkedHashSet<NFAState> secondTempSet = new LinkedHashSet<>();
                 for (NFAState state: tempSet) {
                     secondTempSet.addAll(eClosure(state));
                 }
-                // boolean destination = NFASet.contains(tempSet);
-                // if (!destination) {
-                //     if (hasFinal(tempSet)) {
-                //         NFAMap.put(tempSet, tempSet.toString());
-                //         dfa.addFinalState(NFAMap.get(tempSet));
-                //         NFASet.add(tempSet);
-                //     } else {
-                //         NFAMap.put(tempSet, tempSet.toString());
-                //         dfa.addState(NFAMap.get(tempSet));
-                //         NFASet.add(tempSet);
-                //     }
-                //     if (NFAList.contains(tempSet)) {
-                //         NFAList.add(tempSet);
-                //     }
-                // }
-                //boolean destination = NFAMap.containsKey(secondTempSet);
+            
                 if (!NFAMap.containsKey(secondTempSet)) {
                     NFAMap.put(secondTempSet, secondTempSet.toString());
                     NFAList.add(secondTempSet);
@@ -182,7 +154,7 @@ public class NFA implements NFAInterface {
 
     public boolean hasFinal(Set<NFAState> tempSet) {
         boolean hasFinal = false;
-        for (NFAState state: Q) {
+        for (NFAState state: tempSet) {
             if (state.isFinalFlag()) {
                 hasFinal = true;
                 break;
@@ -259,24 +231,4 @@ public class NFA implements NFAInterface {
         return eTransitionStates;
     }
 
-    /**
-     * Converts an NFA start state to a DFA start state.
-     * 
-     * @param q0 This NFA's start state.
-     * @return DFA start state converted from supplied NFA start state.
-     * 
-     * @author Steven Lineses
-     */
-    private DFAState q0toDFAStartState(NFAState q0) {
-        // Find all states accessible by start state using epsilon transitions.
-        Set<NFAState> eTransitions = eClosure(q0);
-
-        // Create new DFA start state name based on results from e closure traversal.
-        StringBuilder sb = new StringBuilder();
-        for(NFAState s : eTransitions) {
-            sb.append(s.getName());
-        }
-        
-        return new DFAState(sb.toString());
-    }
 }

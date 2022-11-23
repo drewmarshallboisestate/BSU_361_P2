@@ -1,0 +1,9 @@
+c
+a
+b 
+a1a aeb a0b a0c b1b bec c0c c1c
+00
+10
+010
+100
+001

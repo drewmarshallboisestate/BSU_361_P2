@@ -10,6 +10,7 @@ import java.util.Set;
 
 import fa.State;
 import fa.dfa.DFA;
+import fa.dfa.DFAState;
 
 /**
  * Tuesday, November 22, 2022 
@@ -56,8 +57,8 @@ public class NFA implements NFAInterface {
         if (getState(name) == null) {
             startState = new NFAState(name);
             Q.add(startState);
-            q0 = startState;
         }
+        q0 = startState;
     }
 
     
@@ -127,8 +128,7 @@ public class NFA implements NFAInterface {
         }
     }
     
-
-    
+ 
     /** 
      * Returns Q (representation of all states)
      * @return the set of states in the NFA
@@ -147,8 +147,7 @@ public class NFA implements NFAInterface {
     public Set<? extends State> getFinalStates() {  
         return F;
     }
-
-    
+   
     /** 
      * Returns q0 (start state representation in NFA)
      * @return the start state of the NFA
@@ -157,8 +156,7 @@ public class NFA implements NFAInterface {
     public State getStartState() {
         return q0;
     }
-
-    
+   
     /** 
      * Returns sigma (set representation of alphabet/transition characters)
      * @return Set of characters in the alphabet
@@ -167,8 +165,7 @@ public class NFA implements NFAInterface {
     public Set<Character> getABC() {
         return sigma;
     }
-
-    
+   
     /** 
      * Creates a DFA from an NFA following the convertion steps.
      * Walks through the NFA state by state and finds each transition.
@@ -186,8 +183,18 @@ public class NFA implements NFAInterface {
         Set<NFAState> NFAStates = eClosure(q0);  //gets first set state from NFA to create DFA
       
         NFAList.add(NFAStates);  //adds the set of states created from eClosure of q0 to the queue
-        dfa.addStartState(NFAStates.toString());  //Adds the starting state set to the DFA
+
+        //First check if the initial state created from eClosure contains a final state in its set
+        if (hasFinal(NFAStates)) {
+            String addFinalState = NFAStates.toString();
+            DFAState dfaState = new DFAState(addFinalState, true);
+            dfa.addFinalState(dfaState.toString());
+        } 
+
+        String addStartState = NFAStates.toString();
+        dfa.addStartState(addStartState);  //Adds the starting state set to the DFA
         NFAMap.put(NFAStates, NFAStates.toString());  //put the set of states into the map with the set as the key and its toString representation as its value
+
 
         while (!NFAList.isEmpty()) {  //loop through the queue/list that holds NFA states
             NFAStates = NFAList.remove(0); //removes the first NFA state in the list as it has been added or will be added later, process of moving through the queue
@@ -196,7 +203,7 @@ public class NFA implements NFAInterface {
 
                 //We don't want to include epsilon transitions in our DFA
                 if (trans == 'e') {
-                    break;
+                    continue;
                 }
 
                 /*
@@ -318,6 +325,7 @@ public class NFA implements NFAInterface {
         } else {
             NFAState currState = statesToVisit.pop();
             statesVisited.add(currState);
+            // eTransitionStates.add(currState);  //For every transition to a state with an epsilon it will include the original state in the result state
     
             // Check if state on top of stack has child nodes
             LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();

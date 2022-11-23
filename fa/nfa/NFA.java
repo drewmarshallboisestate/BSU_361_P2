@@ -53,23 +53,23 @@ public class NFA implements NFAInterface {
      */
     @Override
     public void addStartState(String name) {
-        //Create empty state to begin
+        // Create empty state to begin
         NFAState startState = null;
-        boolean exists = false;  //Flag to see if the state already exists
+        boolean exists = false;  // Flag to see if the state already exists
         for (NFAState state: Q) {
             if (name.equals(state.getName())) {
-                exists = true; //we dont need to add a start state, just set it
-                startState = state;  //set the startstate to be the state already in our Q
+                exists = true; // We dont need to add a start state, just set it
+                startState = state;  // Set the startstate to be the state already in our Q
             }
         }
 
-        //If the state doesn't exist we create it as a new state and add it to our states (Q)
+        // If the state doesn't exist we create it as a new state and add it to our states (Q)
         if (!exists) {
             startState = new NFAState(name);
             Q.add(startState);
         }
 
-        q0 = startState;  //Finally set the startState as either the new state or an already created state
+        q0 = startState;  // Finally set the startState as either the new state or an already created state
     }
 
     
@@ -111,7 +111,6 @@ public class NFA implements NFAInterface {
         finalState = new NFAState(name, true);
         Q.add(finalState);
         F.add(finalState);
-        
     }
 
     
@@ -190,14 +189,14 @@ public class NFA implements NFAInterface {
     @Override
     public DFA getDFA() {
 
-        DFA dfa = new DFA(); //DFA to be returned 
-        LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  //list/queue representation of the NFA states
-        HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  //map to track each state passed over from the NFA, allows us to step through and create each new state/transition
-        Set<NFAState> NFAStates = eClosure(q0);  //gets first set state from NFA to create DFA
+        DFA dfa = new DFA(); // DFA to be returned 
+        LinkedList<Set<NFAState>> NFAList = new LinkedList<>();  // List/queue representation of the NFA states
+        HashMap<Set<NFAState>, String> NFAMap = new LinkedHashMap<>();  // Map to track each state passed over from the NFA, allows us to step through and create each new state/transition
+        Set<NFAState> NFAStates = eClosure(q0);  // Gets first set state from NFA to create DFA
       
-        NFAList.add(NFAStates);  //adds the set of states created from eClosure of q0 to the queue
+        NFAList.add(NFAStates);  // Adds the set of states created from eClosure of q0 to the queue
 
-        //First check if the initial state created from eClosure contains a final state in its set
+        // First check if the initial state created from eClosure contains a final state in its set
         if (hasFinal(NFAStates)) {
             String addFinalState = NFAStates.toString();
             DFAState dfaState = new DFAState(addFinalState, true);
@@ -205,16 +204,16 @@ public class NFA implements NFAInterface {
         } 
 
         String addStartState = NFAStates.toString();
-        dfa.addStartState(addStartState);  //Adds the starting state set to the DFA
-        NFAMap.put(NFAStates, NFAStates.toString());  //put the set of states into the map with the set as the key and its toString representation as its value
+        dfa.addStartState(addStartState);  // Adds the starting state set to the DFA
+        NFAMap.put(NFAStates, NFAStates.toString());  // Put the set of states into the map with the set as the key and its toString representation as its value
 
 
-        while (!NFAList.isEmpty()) {  //loop through the queue/list that holds NFA states
+        while (!NFAList.isEmpty()) {  // Loop through the queue/list that holds NFA states
             NFAStates = NFAList.remove(0); //removes the first NFA state in the list as it has been added or will be added later, process of moving through the queue
      
-            for (char trans: sigma) {  //loop through each transition in the alphabet
+            for (char trans: sigma) {  // Loop through each transition in the alphabet
 
-                //We don't want to include epsilon transitions in our DFA
+                // We don't want to include epsilon transitions in our DFA
                 if (trans == 'e') {
                     continue;
                 }
@@ -228,39 +227,39 @@ public class NFA implements NFAInterface {
                  * expands from all possible transitions.
                  */
 
-                //Set representation of states remaing to transition to based on each transition character
+                // Set representation of states remaing to transition to based on each transition character
                 Set<NFAState> tempSet = new LinkedHashSet<>();
                 for (NFAState state: NFAStates) {
                     Set<NFAState> newSet = state.getStateOnSymb(trans);
-                    tempSet.addAll(newSet);  //add all the states that can be transitioned to based on a transition character     
+                    tempSet.addAll(newSet);  // Add all the states that can be transitioned to based on a transition character     
                 }
-                    //Set representation of states remaing to transition to based on each transition character
+                    // Set representation of states remaing to transition to based on each transition character
                     Set<NFAState> secondTempSet = new LinkedHashSet<>();
                     for (NFAState state: tempSet) {
                         Set<NFAState> newSetEpsilon = eClosure(state);
-                        secondTempSet.addAll(newSetEpsilon);  //add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
+                        secondTempSet.addAll(newSetEpsilon);  // Add all the sets of states that can be transitioned to based on epsilon, created from eClosure which returns the set of states that can be transitioned to from an epsilon transition
                     }
             
-                //If our map does not contains the set created from eclosure (it's a new state created from eclosure that will be in the DFA)
+                // If our map does not contains the set created from eclosure (it's a new state created from eclosure that will be in the DFA)
                 boolean hasKey = NFAMap.containsKey(secondTempSet);
                 if (!hasKey) {
-                    NFAList.add(secondTempSet);  //add that set to our list/queue to process through later
-                    NFAMap.put(secondTempSet, secondTempSet.toString());  //Add this newly created state set to our map and have it contain the toString value representation of the state in order to create it as a DFA state
+                    NFAList.add(secondTempSet);  // Add that set to our list/queue to process through later
+                    NFAMap.put(secondTempSet, secondTempSet.toString());  // Add this newly created state set to our map and have it contain the toString value representation of the state in order to create it as a DFA state
                     
-                    boolean isFinal = hasFinal(secondTempSet);  //Search the state set to see if it contains a final state from the NFA
-                    //If it contains a final state add it to the DFA as a final state
+                    boolean isFinal = hasFinal(secondTempSet);  // Search the state set to see if it contains a final state from the NFA
+                    // If it contains a final state add it to the DFA as a final state
                     if (isFinal) {
                         String stateToAdd = NFAMap.get(secondTempSet);
-                        dfa.addFinalState(stateToAdd);   //Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
-                    } else {  //Otherwise add it as a normal state 
+                        dfa.addFinalState(stateToAdd);   // Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
+                    } else {  // Otherwise add it as a normal state 
                         String stateToAdd = NFAMap.get(secondTempSet);
-                        dfa.addState(stateToAdd);  //Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
+                        dfa.addState(stateToAdd);  // Get will return the value from the state set, which is just the string representation of the state set, again allowing us to create a DFA state
                     }
                 }
 
-                String fromState = NFAMap.get(NFAStates);  //Create the string representation of the state set we are on
-                String toState = NFAMap.get(secondTempSet);  //Create the string representation of the state set we will create a transition to
-                dfa.addTransition(fromState, trans, toState);   //Add the transition to the DFA with the newly created state sets
+                String fromState = NFAMap.get(NFAStates);  // Create the string representation of the state set we are on
+                String toState = NFAMap.get(secondTempSet);  // Create the string representation of the state set we will create a transition to
+                dfa.addTransition(fromState, trans, toState);   // Add the transition to the DFA with the newly created state sets
             }
         }
         return dfa;
@@ -273,9 +272,9 @@ public class NFA implements NFAInterface {
      * @return whether or not the set contains a state that is in the NFA's final set of states
      */
     public boolean hasFinal(Set<NFAState> searchSet) {
-        //Loop through each state in the passed in set
+        // Loop through each state in the passed in set
         for (NFAState state: searchSet) {
-            //If the state is in the NFA's final set of states return true
+            // If the state is in the NFA's final set of states return true
             if (F.contains(state)) { 
                 return true;
             }
@@ -331,6 +330,7 @@ public class NFA implements NFAInterface {
      * @return Set of NFA states accessible from provided state only on epsilon transitions.
      * 
      * @author Steven Lineses
+     * @author Drew Marshall
      */
     private Set<NFAState> eClosureTraversal(ArrayDeque<NFAState> statesToVisit, Set<NFAState> statesVisited, Set<NFAState> eTransitionStates) {
         if(statesToVisit.isEmpty()) {
@@ -338,15 +338,13 @@ public class NFA implements NFAInterface {
         } else {
             NFAState currState = statesToVisit.pop();
             statesVisited.add(currState);
-            // eTransitionStates.add(currState);  //For every transition to a state with an epsilon it will include the original state in the result state
     
-            // Check if state on top of stack has child nodes
+            // Check if state on top of stack has adjacent states.
             LinkedHashMap<Character, HashSet<NFAState>> adjacentStates = currState.getTransitions();
     
             // Ensure that curr state has adjacent nodes with at least one e-transition.
             if(!adjacentStates.isEmpty() && adjacentStates.keySet().contains('e')) {
                 for(NFAState adjacentState : adjacentStates.get('e')) {
-
                     // Ensure that the current state has not already been visited. Don't need to revisit
                     // a state including the current state itself.
                     if(!statesVisited.contains(adjacentState) && !statesToVisit.contains(adjacentState)) {
@@ -355,14 +353,14 @@ public class NFA implements NFAInterface {
     
                     eTransitionStates.add(adjacentState);
                 }
-    
+                
+                // Recurse until statesToVisit is empty.
                 eClosureTraversal(statesToVisit, statesVisited, eTransitionStates);
             } 
 
-            eTransitionStates.add(currState);  //For every transition to a state with an epsilon it will include the original state in the result state
+            eTransitionStates.add(currState);  // For every transition to a state with an epsilon it will include the original state in the result state
         }
 
         return eTransitionStates;
     }
-
 }

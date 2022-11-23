@@ -23,8 +23,6 @@ import java.util.Set;
   * @author Drew Marshall
   */
 public class NFAState extends State {
-    
-
     // Create a linked HashMap to represent the NFA transitions 
     private LinkedHashMap<Character, HashSet<NFAState>> NFATransitionMap;
     // Need flag to keep track of final states
@@ -32,6 +30,7 @@ public class NFAState extends State {
 
     /**
      * Constructor to represent an NFA state
+     * 
      * @param stateName String name of the state to be created
      */
     public NFAState(String stateName) { // Constructor for NFAState
@@ -45,7 +44,8 @@ public class NFAState extends State {
 
     
     /** 
-     * Attaches a states transitions to the state 
+     * Attaches a states transitions to the state
+     * 
      * @param onSymb character transition 
      * @param toState state to be transitioned to from onsymb
      */
@@ -66,7 +66,8 @@ public class NFAState extends State {
 
     
     /** 
-     * Returns the state set that would result from a certain transition 
+     * Returns the state set that would result from a certain transition
+     * 
      * @param onsymb character representation of a single transition
      * @return Set<NFAState> the set of states for a particular
      * character transition from the alphabet 
@@ -84,6 +85,7 @@ public class NFAState extends State {
 
     /**
      * Constructor to represent an NFA final/accept state
+     * 
      * @param stateName String name of the state to be created
      * @param finalFlag Flag to set a state as final
      */
@@ -97,6 +99,8 @@ public class NFAState extends State {
     }
 
     /**
+     * Returns true is state is final else false
+     * 
      * @return if a state is a final state or not
      */
     public boolean isFinalFlag() {//
@@ -105,6 +109,8 @@ public class NFAState extends State {
     }
 
     /**
+     * Returns transitions for given sigma element.
+     * 
      * @return LinkedHashMap that holds the transitions for a state
      */
     public LinkedHashMap<Character, HashSet<NFAState>> getTransitions() { // Constructor to get transitions 

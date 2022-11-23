@@ -15,7 +15,7 @@
             "name": "Launch NFADriver - p2tc0.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc0.txt"]
         },
         {
@@ -23,7 +23,7 @@
             "name": "Launch NFADriver - p2tc1.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc1.txt"]
         },
         {
@@ -31,7 +31,7 @@
             "name": "Launch NFADriver - p2tc2.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc2.txt"]
         },
         {
@@ -39,7 +39,7 @@
             "name": "Launch NFADriver - p2tc3.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc3.txt"]
         },
         {
@@ -47,7 +47,7 @@
             "name": "Launch NFADriver - p2tc4.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc4.txt"]
         },
         {
@@ -55,7 +55,7 @@
             "name": "Launch NFADriver - p2tc5_no_final_state.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc5_no_final_state.txt"]
         },
         {
@@ -63,7 +63,7 @@
             "name": "Launch NFADriver - p2tc6.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc6.txt"]
         },
         {
@@ -71,7 +71,7 @@
             "name": "Launch NFADriver - p2tc7.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc7_single_state.txt"]
         },
         {
@@ -79,7 +79,7 @@
             "name": "Launch NFADriver - p2tc8.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc8.txt"]
         },
         {
@@ -87,7 +87,7 @@
             "name": "Launch NFADriver - p2tc9.txt",
             "request": "launch",
             "mainClass": "fa.nfa.NFADriver",
-            "projectName": "BSU_361_P2_8e8ef06c",
+            "projectName": "BSU_361_P2_30f93a33",
             "args": ["./tests/p2tc9.txt"]
         }
     ]

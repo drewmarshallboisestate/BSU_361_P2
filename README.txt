@@ -56,12 +56,35 @@ programs down into small portions instead of trying to do it all at once.
 Like building a puzzle, build it up piece by piece, don't try and put them 
 all together at once. 
 
+### Steven's Reflection
+
+Watching videos on BFS and DFS search helped write the code to implement the functions.
+I am a visual learner so trying to abstractly think about an NFA in Java code did not work
+well.
+
+The concept of converting an NFA to a DFA is pretty clear now. However, I don't think I'd know
+how to make a minimal DFA from an NFA. I am not sure what kind of algorithm that entails.
+
+For debugging, I made multiple breakpoints in the code. Any time a change was made to the program,
+I reran the tests to ensure that the same output was being generated. Also, I created a python script
+to convert a test case into an equivalent JFLAP file which I could then view the NFA in JFLAP.
+That helped the debugging process alot and helped to verify which inputs should be accepted or
+rejected.
+
+Next time, I should read up on the required algorithms first. Then also research a general approach
+to the problem. Also, drawing the process out would probably help as well since I am a visual learner.
+
+Going back in time, I would definitely start the project earlier. This project was more involved
+than Project 1, which we were warned about, but I think taking an incremental approach would have been
+more viable.
+
 ## Compiling and Using
 
-This section should tell the user how to compile your code.  It is
-also appropriate to instruct the user how to use your code. Does your
-program require user input? If so, what does your user need to know
-about it to use it as quickly as possible?
+Compile program:
+`javac fa/nfa/NFADriver.java`
+
+Run program for test case 0. (Can replace `./tests/p2tc0.txt` with path to a different test):
+`java fa.nfa.NFADriver ./tests/p2tc0.txt`
 
 ## Sources used
 
@@ -87,6 +110,17 @@ https://www.javatpoint.com/automata-conversion-from-nfa-to-dfa
 The following link is a Github page that is a tutorial for how NFA's work
 and how to think of them when implemented using java
 https://grrinchas.github.io/posts/nfa
+
+# Steven's Sources
+
+Recursion
+https://www.programiz.com/java-programming/recursion
+
+Java Sets
+https://www.geeksforgeeks.org/set-in-java/
+
+DFS explanation
+https://www.youtube.com/watch?v=Urx87-NMm6c
 
 
 ----------

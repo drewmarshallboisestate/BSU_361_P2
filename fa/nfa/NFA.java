@@ -53,9 +53,8 @@ public class NFA implements NFAInterface {
      */
     @Override
     public void addStartState(String name) {
-        NFAState startState = null;
+        NFAState startState = new NFAState(name);
         if (getState(name) == null) {
-            startState = new NFAState(name);
             Q.add(startState);
         }
         q0 = startState;

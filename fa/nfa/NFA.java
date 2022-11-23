@@ -53,11 +53,23 @@ public class NFA implements NFAInterface {
      */
     @Override
     public void addStartState(String name) {
-        NFAState startState = new NFAState(name);
-        if (getState(name) == null) {
+        //Create empty state to begin
+        NFAState startState = null;
+        boolean exists = false;  //Flag to see if the state already exists
+        for (NFAState state: Q) {
+            if (name.equals(state.getName())) {
+                exists = true; //we dont need to add a start state, just set it
+                startState = state;  //set the startstate to be the state already in our Q
+            }
+        }
+
+        //If the state doesn't exist we create it as a new state and add it to our states (Q)
+        if (!exists) {
+            startState = new NFAState(name);
             Q.add(startState);
         }
-        q0 = startState;
+
+        q0 = startState;  //Finally set the startState as either the new state or an already created state
     }
 
     
@@ -95,9 +107,11 @@ public class NFA implements NFAInterface {
      */
     @Override
     public void addFinalState(String name) {
-        NFAState finalState = new NFAState(name, true);
+        NFAState finalState = null;
+        finalState = new NFAState(name, true);
         Q.add(finalState);
         F.add(finalState);
+        
     }
 
     
